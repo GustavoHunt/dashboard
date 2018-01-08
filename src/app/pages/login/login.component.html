@@ -1,0 +1,107 @@
+<div class="wrapper wrapper-full-page">
+    <nav class="navbar navbar-primary navbar-transparent navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu-example">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/#/dashboard">{{siteName}}</a>
+            </div>
+            <div class="collapse navbar-collapse" id="menu-example">
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- <li>
+                        <a href="/dashboard">
+                            <i class="material-icons">dashboard</i> Dashboard
+                        </a>
+                    </li> -->
+                    <li class="">
+                        <a href="/intranet">
+                            <i class="material-icons">build</i>Call Helper
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="/pages/register">
+                            <i class="material-icons">person_add</i> Register
+                        </a>
+                    </li>
+                    <li class=" active ">
+                        <a href="/pages/login">
+                            <i class="material-icons">fingerprint</i> Login
+                        </a>
+                    </li>
+                    <!-- <li class="">
+                        <a href="/pages/lock">
+                            <i class="material-icons">lock_open</i> Lock
+                        </a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="full-page login-page" filter-color="black" data-image="../../../assets/img/login.jpeg">
+        <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
+        <div class="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3">
+                        <form method="post" action="" #f="ngForm" (ngSubmit)="access(f.value, f.valid, f)" [hidden]="showLoading" >
+                            <div class="card card-login card-hidden">
+                                <div class="card-header text-center" data-background-color="red">
+                                    <h4 class="card-title">Login</h4>
+                                </div>
+                                <p class="category text-center">
+                                    Restrict Access
+                                </p>
+                                <div class="card-content">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">email</i>
+                                        </span>
+                                        <div class="form-group label-floating">
+                                            <label class="control-label">Email address</label>
+                                            <input type="email" class="form-control" [ngModel]="login.email" #email="ngModel" required  autocomplete="off" name="email" id="email">
+                                        </div>
+                                    </div>
+                                    <div class="input-group" *ngIf="!forgotPassword">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">lock_outline</i>
+                                        </span>
+                                        <div class="form-group label-floating">
+                                            <label class="control-label">Password</label>
+                                            <input type="password" class="form-control" [ngModel]="login.password" #password="ngModel"  minlength="6" required name="password" id="password">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer text-center" [hidden]="forgotPassword">
+                                    <button id="btn-letsgo" type="submit" class="btn btn-danger btn-simple btn-wd btn-lg">Let's go</button>
+                                    <div class="text-center text-muted"><button type="button" class="btn btn-simple btn-wd btn-sm" (click)="forgotPassword = true">Forgot Password?</button></div>
+                                </div>
+                                <div class="footer text-center" *ngIf="forgotPassword">
+                                    <button type="submit" class="btn btn-danger btn-simple btn-wd btn-lg">Send me a new password</button>
+                                    <div class="text-center text-muted"><button type="button" class="btn btn-simple btn-wd btn-sm" (click)="forgotPassword = false">Back to Login</button></div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="loader" *ngIf="showLoading">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <p class="copyright pull-right">
+                    &copy;
+                    {{test | date: 'yyyy'}}
+                    @coelhog
+                </p>
+            </div>
+        </footer>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="blue">
+                        <i class="material-icons">important_devices</i>
+                    </div>
+                    <div class="card-content">
+                        <h4 class="card-title">Check Website Platform/CMS and Server</h4>
+                        <form method="#" action="#" #f="ngForm" (ngSubmit)="check(f.value, f.valid, f)" >
+                            <div class="form-group label-floating">
+                                <label class="control-label">List of Websites (One per line)</label>
+                                <textarea class="form-control" style="height:120px" [ngModel]="website.list" #list="ngModel" required name="list"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-fill btn-info" [disabled]="!f.valid">Submit</button>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="tableData1.dataRows.length== 0">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="rose">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <div class="card-content">
+                        <h4 class="card-title">Websites</h4>
+                        <button type="button" class="btn btn-fill btn-success pull-right" [disabled]="tableData1.dataRows.length== 0" (click)="tableToExcel('msite')" style="margin-top:-30px"><i class="material-icons">get_app</i> Export</button>
+                        <div class="clearfix"></div>
+                        <div class="content table-responsive">
+                            <table class="table" id="testTable">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th *ngFor="let cell of tableData1.headerRow">{{ cell }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let row of tableData1.dataRows">
+                                        <td>{{row[0]}}</td>
+                                        <td>
+                                            <div class="loader" style="width:25px; position:initial; margin: 5px 0 0 0; padding-top:5px">
+                                                <svg class="circular" viewBox="25 25 50 50" *ngIf="row[2] == '1'">
+                                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                                </svg>
+                                            </div>
+                                            <div style="padding-left:30px; margin-top:-30px; position:absolute">{{row[1]}}</div>
+                                        </td>
+                                        <!-- <td>{{row[2]}}</td>
+                                        <td>{{row[3]}}</td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

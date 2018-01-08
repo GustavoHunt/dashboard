@@ -1,0 +1,286 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="rose">
+                        <i class="material-icons">language</i>
+                    </div>
+                    <div class="card-content">
+                        <h4 class="card-title">Websites assigned to me</h4>
+                        <div class="loader" *ngIf="showLoading">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+                        <button class="btn btn-success btn-round btn-fab btn-fab-mini pull-right" style="margin-left:15px" type="button" (click)="tableToExcel('mywebsites')"
+                            *ngIf="tableData1.dataRows.length > 0"><i class="material-icons ">get_app</i>
+                        </button>
+                        <div class="table-responsive">
+                            <table class="table" *ngIf="tableData1.dataRows.length > 0" id="mywebsites">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">{{ tableData1.headerRow[0] }}</th>
+                                        <th>{{ tableData1.headerRow[1] }}</th>
+                                        <th>{{ tableData1.headerRow[2] }}</th>
+                                        <th>{{ tableData1.headerRow[3] }}</th>
+                                        <th class="text-right">{{ tableData1.headerRow[4] }}</th>
+                                        <th class="text-right">{{ tableData1.headerRow[5] }}</th>
+                                        <th class="text-right">{{ tableData1.headerRow[6] }}</th>
+                                        <th class="text-right">{{ tableData1.headerRow[7] }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let row of tableData1.dataRows" onmouseenter="$(this).tooltip()">
+                                        <td class="text-center">{{row[0]}}</td>
+                                        <td>{{row[1]}}</td>
+                                        <td>{{row[2]}}</td>
+                                        <td>{{row[3]}}</td>
+                                        <td class="text-right">{{row[4]}}</td>
+                                        <td class="text-right"><span *ngIf="row[8]" rel="tooltip" data-placement="bottom" title="Achieve optimization goal (-3 secs)"><i class="material-icons text-success" style="font-size:14px" >check_circle</i></span>                                            {{row[5]}} </td>
+                                        <td class="text-right">{{row[6]}} </td>
+                                        <td class="td-actions text-right">
+                                            <button type="button" rel="tooltip" data-placement="bottom" title="Refresh" class="btn btn-info {{row[6]}}" data-toggle="modal"
+                                                data-target="#myModal" (click)="openDetails(row[9])">
+                                                      <i class="material-icons">search</i>
+                                                  </button>
+                                            <!-- <button type="button" rel="tooltip" class="btn btn-success {{row[7]}}">
+                                                      <i class="material-icons">edit</i>
+                                                  </button> -->
+                                            <button type="button" rel="tooltip" class="btn btn-danger {{row[7]}}" data-toggle="modal" data-target="#delete" (click)="delete(row[9], index)">
+                                                      <i class="material-icons">close</i>
+                                                  </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" *ngIf="websiteDetails.agent">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                    <h3 class="modal-title" style="font-weight:bold">{{websiteDetails.url}}</h3>
+                    <span class="text-muted">Created at: {{websiteDetails.date | date: 'yyyy/MM/dd HH:mm'}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4" style="border-bottom: 1px solid #eee; padding-bottom:20px">
+                            <strong> Agent:</strong> <br/>{{websiteDetails.agent.name}} <br/>({{websiteDetails.agent.email}})
+                        </div>
+                        <div class="col-md-4" style="border-bottom: 1px solid #eee; padding-bottom:20px">
+                            <strong> Account Manager:</strong> <br/>{{websiteDetails.salesRep.name}} <br/>({{websiteDetails.salesRep.email}})
+                        </div>
+                        <div class="col-md-4" style="border-bottom: 1px solid #eee; padding-bottom:20px;">
+                            <strong> Market:</strong> <br/> {{websiteDetails.market.description}} <br/> {{websiteDetails.language.description}}
+                        </div>
+                        <div class="col-md-4" style="padding-top:20px">
+                            <strong> Page Speed Insights:</strong> <br/>
+                            <span class="text-danger">Score Before: <strong>{{websiteDetails.retest.psiBefore}}</strong> </span><br/>
+                            <span class="text-success">Score After: <strong>{{websiteDetails.retest.psiAfter}} <span *ngIf="websiteDetails.retest.psiAfter == null">{{websiteDetails.retest.psiBefore}}</span></strong>
+                            </span><br/>
+                            <button class="btn btn-danger btn-block" (click)="runNewPSI(websiteDetails.rowKey, websiteDetails.url)" *ngIf="!showLoadingPSI">
+                                    <span class="btn-label">
+                                        <i class="material-icons">refresh</i>
+                                    </span>
+                                    Update Score After
+                            </button>
+                            <div class="loader" *ngIf="showLoadingPSI" style="position:relative; width:30px; padding-top:10px; top:20px">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            {{statusPSI.statusText}}
+                        </div>
+                        <div class="col-md-4" style="padding-top:20px">
+                            <strong> Web Page Test:</strong> <br/>
+                            <span class="text-danger" style="padding-right:10px">Speed Index Before: <strong>{{websiteDetails.retest.wptBefore}}</strong> </span>                            <a *ngIf="websiteDetails.retest.wptBeforeUrl != null" class="text-muted" href="{{websiteDetails.retest.wptBeforeUrl}}"
+                                target="_blank">| Link <i class="material-icons" style="font-size:14px" >launch</i></a><br/>
+
+                            <span class="text-success" style="padding-right:10px">Speed Index After: <strong>{{websiteDetails.retest.wptAfter}}</strong> </span>                            <span class="text-muted" *ngIf="websiteDetails.retest.wptAfter == null">Waiting for test</span>                            <a *ngIf="websiteDetails.retest.wptAfter != null" class="text-muted" href="{{websiteDetails.retest.wptAfterUrl}}"
+                                target="_blank">| Link <i class="material-icons" style="font-size:14px" >launch</i></a><br/>
+
+                            <button class="btn btn-info btn-block" (click)="runNewWPT(websiteDetails.rowKey, websiteDetails.retest.wptAfterTestId)" *ngIf="!showLoadingWPT">
+                                    <span class="btn-label">
+                                        <i class="material-icons">refresh</i>
+                                    </span>
+                                    Update Speed Index After
+                            </button>
+                            <div class="loader" *ngIf="showLoadingWPT" style="position:relative; width:30px; padding-top:10px; top:20px">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            {{statusWPT.statusText}}
+                        </div>
+                        <div class="col-md-4" style="padding-top:20px">
+                            <strong> Settings:</strong> <br/> Run new tests rate: <br/><strong><span class="text-muted" *ngIf="websiteDetails.retest.rate == 'day'">Every day at midnight</span> <span class="text-muted" *ngIf="websiteDetails.retest.rate == 'debug'">Debug</span></strong>
+                            <button type="button" class="btn btn-warning btn-block" aria-hidden="true" data-toggle="modal" data-target="#testHistory"
+                                (click)="getVersionHistory(websiteDetails.rowKey)">
+                                <i class="material-icons">history</i> Test History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-simple" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- small modal -->
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-small ">
+            <div class="modal-content" [hidden]="showLoadingDelete">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="material-icons">clear</i></button>
+                </div>
+                <div class="modal-body text-center">
+                    <h5>Are you sure you want to do this? <br/><br/><strong class="text-danger">{{websiteDetails.url}}</strong>                        will be removed from the queue. </h5>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-simple" data-dismiss="modal">Never mind</button>
+                    <button type="button" class="btn btn-danger btn-simple" (click)="confirmDelete(websiteDetails.rowKey, websiteDetails.url, websiteDetails.index)">Yes</button>
+                </div>
+            </div>
+            <div class="loader" *ngIf="showLoadingDelete">
+                <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
+            </div>
+        </div>
+    </div>
+    <!--    end small modal -->
+    <div class="modal fade" id="testHistory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" *ngIf="websiteDetails.agent">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            <i class="material-icons">clear</i>
+                        </button>
+                    <h3 class="modal-title" style="font-weight:bold">Test History for <span class="text-info">{{websiteDetails.url}}</span></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong> Original:</strong>
+                            <div style="border-top: 1px solid #eee; padding-top:20px; margin-top:10px">
+                                <div class="text-info" style="font-weight:bold; padding-bottom:10px">
+                                    Web Page Test
+                                </div>
+                                <span style="padding-right:10px">Speed Index Before: <strong>{{websiteDetails.retest.wptBefore}}</strong> </span>
+                            </div>
+                            <div> <a *ngIf="websiteDetails.retest.wptBeforeUrl != null" class="text-muted" href="{{websiteDetails.retest.wptBeforeUrl}}"
+                                    target="_blank">| Link <i class="material-icons" style="font-size:14px" >launch</i></a>
+                            </div>
+
+                            <div>
+                                <span style="padding-right:10px; margin-top:10px">Speed Index After: <strong>{{websiteDetails.retest.wptAfter}}</strong> </span>
+                            </div>
+
+                            <div class="text-info" style="font-weight:bold; padding-bottom:10px; padding-top:20px">
+                                Page Speed Insights
+                            </div>
+                            <div>
+                                <span>Score Before: <strong>{{websiteDetails.retest.psiBefore}}</strong> </span><br/>
+                            </div>
+                            <div>
+                                <span>Score After: <strong>{{websiteDetails.retest.psiAfter}} <span *ngIf="websiteDetails.retest.psiAfter == null">{{websiteDetails.retest.psiBefore}}</span></strong>
+                                </span>
+                            </div>
+                            <div class="text-warning" style="font-weight:bold; padding-bottom:10px; padding-top:20px">
+                                Pendings Treatments
+                            </div>
+                            <ul>
+                                <li *ngFor="let pending of websiteDetails.pageSpeedArray | greaterthan: 'ruleImpact' : 0.0001 | lessthan: 'ruleImpact' : 1000">
+                                    <div>{{pending.localizedRuleName}}</div>
+                                </li>
+                            </ul>
+                            <div class="text-success" style="font-weight:bold; padding-bottom:10px; padding-top:20px">
+                                Implemented Treatments
+                            </div>
+                            <ul>
+                                <li *ngFor="let pending of websiteDetails.pageSpeedArray | greaterthan: 'ruleImpact' : 0 | lessthan: 'ruleImpact' : 0.0001">
+                                    <div>{{pending.localizedRuleName}}</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <strong> History:</strong>
+                            <div style="border-top: 1px solid #eee; padding-top:0px; margin-top:10px">
+                                <div class="loader" *ngIf="showLoadingHistory" style="position:relative; width:30px; padding-top:10px; top:20px">
+                                    <svg class="circular" viewBox="25 25 50 50">
+                                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                    </svg>
+                                </div>
+                                <div *ngIf="versionHistory.length == 0 && !showLoadingHistory" class="text-muted text-center" style="padding-top:20px">
+                                    No records found in log history.
+                                </div>
+
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default" *ngFor="let version of versionHistory; let i=index">
+                                        <div class="panel-heading" role="tab" id="headingOne{{i}}">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne{{i}}" aria-expanded="true" attr.aria-controls="collapseOne{{i}}">
+                                                <h4 class="panel-title">
+                                                    <strong>{{version.category}} </strong> - Tested on {{version.date | date:
+                                                    'dd/MM/yyyy HH:mm:ss'}}
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </h4>
+                                            </a>
+                                        </div>
+                                        <div id="collapseOne{{i}}" class="panel-collapse collapse" role="tabpanel" attr.aria-labelledby="headingOne{{i}}" *ngIf="version.category == 'PSI'">
+                                            <div class="panel-body">
+                                                <div>
+                                                    <span>Score: <strong>{{version.pageSpeed.ruleGroups.SPEED.score}}</strong> </span><br/>
+                                                </div>
+                                                <div class="text-warning" style="font-weight:bold; padding-bottom:10px; padding-top:20px">
+                                                    Pendings Treatments
+                                                </div>
+                                                <ul>
+                                                    <li *ngFor="let pending of version.pageSpeedArray | greaterthan: 'ruleImpact' : 0.0001 | lessthan: 'ruleImpact' : 1000">
+                                                        <div>{{pending.localizedRuleName}}</div>
+                                                    </li>
+                                                </ul>
+                                                <div class="text-success" style="font-weight:bold; padding-bottom:10px; padding-top:20px">
+                                                    Implemented Treatments
+                                                </div>
+                                                <ul>
+                                                    <li *ngFor="let pending of version.pageSpeedArray | greaterthan: 'ruleImpact' : 0 | lessthan: 'ruleImpact' : 0.0001">
+                                                        <div>{{pending.localizedRuleName}}</div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="collapseOne{{i}}" class="panel-collapse collapse" role="tabpanel" attr.aria-labelledby="headingOne{{i}}" *ngIf="version.category == 'WPT'">
+                                                <div class="panel-body">
+                                                    <div>
+                                                        <span>Speed Index: <strong>{{version.speedIndex}}</strong> </span>
+                                                        <a *ngIf="version.testURL != null" class="text-muted" href="{{version.testURL}}"
+                                                        target="_blank">| Link <i class="material-icons" style="font-size:14px" >launch</i></a>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-simple" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

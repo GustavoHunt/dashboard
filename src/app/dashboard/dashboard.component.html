@@ -1,0 +1,106 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="loader" style="position:relative" *ngIf="showLoadingDashboard ">
+                <svg class="circular" viewBox="25 25 50 50" style="top:45px">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
+            </div>
+            <div class="col-md-12 col-lg-12" *ngIf="(userModel.team.project == 'msite' || userModel.team.project == 'lcs' || userModel.team.project == 'overhead') && !showLoadingDashboard">
+                <div [ngClass]="userModel.team.project == 'lcs'  || userModel.team.project == 'msite' || userModel.team.project == 'overhead'  ?  'col-lg-6' : 'col-lg-3'">
+                    <div class="card card-pricing" [ngClass]="logStart ?  'card-raised' : 'card-plain'">
+                        <div class="content">
+                            <h6 class="category">Start your Day</h6>
+                            <div class="icon" [ngClass]="logStart ?  'icon-rose' : 'icon'">
+                                <i class="material-icons">timer</i>
+                            </div>
+                            <h3 id="showDate" class="card-title" *ngIf="logStart">{{date}}</h3>
+                            <h3 class="card-title" *ngIf="!logStart">{{startLogged}}</h3>
+                            <p class="card-description">
+                                Register the beginning of your day
+                            </p>
+                            <div class="loader" style="position:relative" *ngIf="showLoadingStart ">
+                                <svg class="circular" viewBox="25 25 50 50" style="top:45px">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <!-- <button type="button" class="btn btn-round" (click)="LogUpdate(date, 0)" [disabled]="!logStart" [ngClass]="logStart ?  'btn-rose' : 'btn-white'"
+                                *ngIf="(logStart && !showLoadingStart) && userModel.team.project == 'msite' ">Log In Now</button> -->
+                            <button type="button" class="btn btn-round" (click)="LogUpdate(date, 4)" [disabled]="!logStart" [ngClass]="logStart ?  'btn-rose' : 'btn-white'"
+                                *ngIf="(logStart && !showLoadingStart)" id="logInNow">Log In Now</button>
+                            <button type="button" class="btn btn-round btn-white" disabled *ngIf="!logStart"  id="thankYou">Thank you!</button>
+                        </div>
+                    </div>
+                </div>
+                <div [ngClass]="userModel.team.project == 'lcs' || userModel.team.project == 'msite'  || userModel.team.project == 'overhead' ?  'col-lg-6 hidden' : 'col-lg-3'">
+                    <div class="card card-pricing" [ngClass]="logBreakStart ?  'card-raised' : 'card-plain'">
+                        <div class="content">
+                            <h6 class="category">Break Start</h6>
+                            <div class="icon" [ngClass]="logBreakStart ?  'icon-rose' : 'icon'">
+                                <i class="material-icons">restaurant</i>
+                            </div>
+                            <h3 id="showDate" class="card-title" *ngIf="logBreakStart">{{date}}</h3>
+                            <h3 class="card-title" *ngIf="!logBreakStart">{{breakStartLogged}}</h3>
+                            <p class="card-description">
+                                Register the beginning of your break
+                            </p>
+                            <div class="loader" style="position:relative" *ngIf="showLoadingBreakStart ">
+                                <svg class="circular" viewBox="25 25 50 50" style="top:45px">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <button type="button" class="btn btn-round" (click)="LogUpdate(date, 1)" [disabled]="!logBreakStart" [ngClass]="logBreakStart ?  'btn-rose' : 'btn-white'"
+                                *ngIf="(logBreakStart && !showLoadingBreakStart) || !logBreakStart && logStart ">Go to your Break Now</button>
+                            <button type="button" class="btn btn-round btn-white" disabled *ngIf="!logBreakStart && !logStart">Thank you!</button>
+                        </div>
+                    </div>
+                </div>
+                <div [ngClass]="userModel.team.project == 'lcs'  || userModel.team.project == 'msite'  || userModel.team.project == 'overhead' ?  'col-lg-6 hidden' : 'col-lg-3'">
+                    <div class="card card-pricing" [ngClass]="logBreakEnd ?  'card-raised' : 'card-plain'">
+                        <div class="content">
+                            <h6 class="category">Break End</h6>
+                            <div class="icon" [ngClass]="logBreakEnd ?  'icon-rose' : 'icon'">
+                                <i class="material-icons">restaurant</i>
+                            </div>
+                            <h3 id="showDate" class="card-title" *ngIf="logBreakEnd">{{date}}</h3>
+                            <h3 class="card-title" *ngIf="!logBreakEnd">{{breakEndLogged}}</h3>
+                            <p class="card-description">
+                                Register the end of your break
+                            </p>
+                            <div class="loader" style="position:relative" *ngIf="showLoadingBreakEnd ">
+                                <svg class="circular" viewBox="25 25 50 50" style="top:45px">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <button type="button" class="btn btn-round" (click)="LogUpdate(date, 2)" [disabled]="!logBreakEnd" [ngClass]="logBreakEnd ?  'btn-rose' : 'btn-white'"
+                                *ngIf="(logBreakEnd && !showLoadingBreakEnd) || (!logBreakEnd && logBreakStart && !logStart) || (!logBreakEnd && !logBreakStart && logStart) ">End your Break Now</button>
+                            <button type="button" class="btn btn-round btn-white" disabled *ngIf="!logBreakEnd && !logStart && !logBreakStart">Thank you!</button>
+                        </div>
+                    </div>
+                </div>
+                <div [ngClass]="userModel.team.project == 'lcs'  || userModel.team.project == 'msite' || userModel.team.project == 'overhead'  ?  'col-lg-6' : 'col-lg-3'">
+                    <div class="card card-pricing" [ngClass]="logEnd ?  'card-raised' : 'card-plain'">
+                        <div class="content">
+                            <h6 class="category">Log Out</h6>
+                            <div class="icon" [ngClass]="logEnd ?  'icon-rose' : 'icon'">
+                                <i class="material-icons">timer_off</i>
+                            </div>
+                            <h3 class="card-title" *ngIf="logEnd">{{date}}</h3>
+                            <h3 class="card-title" *ngIf="!logEnd">{{endLogged}}</h3>
+                            <p class="card-description">
+                                End your day
+                            </p>
+                            <div class="loader" style="position:relative" *ngIf="showLoadingEnd ">
+                                <svg class="circular" viewBox="25 25 50 50" style="top:45px">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                            <button type="button" class="btn  btn-round" (click)="LogUpdate(date, 3)" [disabled]="!logEnd" [ngClass]="logEnd ?  'btn-rose' : 'btn-white'"
+                                *ngIf="(logEnd && !showLoadingEnd) || (!logBreakEnd && !logBreakStart && logStart && !logEnd) || (!logBreakEnd && logBreakStart && !logStart && !logEnd) || (logBreakEnd && !logBreakStart && !logStart && !logEnd)  ">Log Out Now</button>
+                            <button type="button" class="btn btn-round" disabled [ngClass]="!logEnd ?  'btn-rose' : 'btn-white'" *ngIf="!logEnd && !logStart && !logBreakStart && !logBreakEnd">You can go home now!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
